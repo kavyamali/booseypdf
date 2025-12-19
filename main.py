@@ -38,8 +38,13 @@ def parse_local_html(file_path):
         print("Did you save the webpage as '*filename*.html'?")
         return None,None,None,None
     print(f"Parsing: {file_path}")
-    with open(file_path,"r",encoding="utf-8") as f:
-        soup=BeautifulSoup(f,'html.parser')
+    with open(file_path,"rb") as f:
+        raw=f.read()
+    try:
+        html=raw.decode("utf-8")
+    except UnicodeDecodeError:
+        html=raw.decode("latin-1",errors="replace")
+    soup=BeautifulSoup(html,'html.parser')
     try:
         raw_title=soup.find("h1",class_="page-header__title").text.strip()
         raw_composer=soup.find("div",class_="page-header__composer").text.strip()
@@ -48,7 +53,7 @@ def parse_local_html(file_path):
         suggested_name="Score.pdf"
     embed_link=soup.find("a",class_="fbp-embed")
     if not embed_link:
-        match=re.search(r"uid=([a-f0-9\-]+)&asset=([a-zA-Z0-9_]+)",str(soup))
+        match=re.search(r"uid=([a-f0-9\-]+)&asset=([a-zA-Z0-9_]+)",html)
         if match:return match.group(1),match.group(2),None,suggested_name
         return None,None,None,None
     params=parse_qs(urlparse(embed_link.get('href')).query)
