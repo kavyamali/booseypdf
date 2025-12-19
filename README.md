@@ -6,7 +6,7 @@ Downloads free, public online scores from boosey as PDF.
 1. **Clone the repository:**
 
 ```
-https://github.com/kavyamali/booseypdf.git
+git clone https://github.com/kavyamali/booseypdf.git
 ```
 2. **In a terminal with python installed:**
 
